@@ -1,0 +1,76 @@
+
+<app-navBar></app-navBar>
+
+<div class="game-container">
+
+    <!-- TOP SECTION -->
+    <div class="top-section">
+
+        <div class="left">
+            <img [src]="currentCoverImage" alt="cover" class="cover">
+
+            <div class="gallery-container">
+                <button class="gallery-control prev" type="button" (click)="scrollGallery(-1)" aria-label="Scroll gallery left">‹</button>
+                <div class="gallery" #galleryScroll>
+                    <img
+                        *ngFor="let img of game.gallery; let i = index"
+                        [src]="img"
+                        [alt]="game.title + ' screenshot ' + (i + 1)"
+                        [class.active]="i === selectedGalleryIndex"
+                        (click)="selectGalleryImage(i)"
+                    />
+                </div>
+                <button class="gallery-control next" type="button" (click)="scrollGallery(1)" aria-label="Scroll gallery right">›</button>
+            </div>
+        </div>
+
+        <div class="right">
+            <h1>{{ game.title }}</h1>
+
+            <p class="description">{{ game.description }}</p>
+
+            <div class="game-meta">
+                <div class="meta-item">
+                    <strong>Studio</strong>
+                    <span>{{ game.studio }}</span>
+                </div>
+                <div class="meta-item">
+                    <strong>Genre</strong>
+                    <span>{{ game.genre }}</span>
+                </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="rating">
+                <span *ngFor="let star of [1,2,3,4,5]">
+                    <i class="star" [class.filled]="star <= game.rating">★</i>
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CATEGORY VOTING -->
+    <h2 class = "vote-title">Vote this game</h2>
+    <div class="categories">
+        
+        
+        <button *ngFor="let cat of game.categories" (click)="vote(cat)">
+            {{ cat }}
+        </button>
+    </div>
+
+    <!-- COMMENTS -->
+    <div class="comments">
+        <h2>Comments</h2>
+
+        @for (comment of game.comments; track comment.user) {
+            <div class="comment">
+                <strong>{{ comment.user }}</strong>
+                <p>{{ comment.message }}</p>
+            </div>
+        }   
+
+    </div>
+
+</div>

@@ -1,0 +1,126 @@
+.profile-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+
+/* HEADER */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #3f51b5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+}
+
+.user-info h2 {
+    margin: 0;
+}
+
+.nickname {
+    color: #aaa;
+}
+
+.email {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+
+/* PROGRESS */
+.progress-section {
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #333;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3f51b5, #5c6bc0);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+}
+
+
+/* BALLOT */
+.ballot-section {
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.ballot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ballot-card {
+    background: #2a2a2a;
+    padding: 1rem;
+    border-radius: 10px;
+    transition: transform 0.2s ease, background 0.2s ease;
+    cursor: pointer;
+}
+
+.ballot-card:hover {
+    transform: translateY(-3px);
+    background: #333;
+}
+
+.category {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 0.3rem;
+}
+
+.game {
+    font-weight: bold;
+}
+
+
+/* EMPTY STATE */
+.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #777;
+    padding: 2rem 0;
+}

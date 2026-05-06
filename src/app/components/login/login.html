@@ -5,15 +5,19 @@
         <form class="auth-form">
             <div class="form-group">
                 <label for="login-email">Email</label>
-                <input type="email" id="login-email" placeholder="example@mail.com" />
+                <input type="text" id="login-email" placeholder="example@mail.com" [(ngModel)]="user.username" name="username"/>
             </div>
 
             <div class="form-group">
                 <label for="login-password">Password</label>
-                <input type="password" id="login-password" placeholder="********" />
+                <input type="password" id="login-password" placeholder="********" [(ngModel)]="user.password" name="password"/>
             </div>
 
-            <button class="auth-button">Log In</button>
+            <button type="submit" class="auth-button" (click)="onLogin()">Log In</button>
+
+            @if(error) {
+                <p class="error-message">{{ error }}</p>
+            }
 
             <p class="auth-switch">
                 Don't have an account?
