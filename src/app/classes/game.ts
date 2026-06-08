@@ -9,6 +9,8 @@ export class Game {
     rating: number;
     coverImage: string;
     gallery: string[];
+
+    // This will become obsolete when we implement dynamic categories and comments, but for now it's a simple array of strings and GameComment objects
     categories: string[];
     comments: GameComment[];
 

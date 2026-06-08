@@ -1,0 +1,93 @@
+<!-- NAVBAR -->
+<app-navBar></app-navBar>
+
+<div class="admin-dashboard">
+
+    <!-- HEADER -->
+    <div class="dashboard-header">
+        <h1>Admin Dashboard</h1>
+        <p>Manage users and platform content</p>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="dashboard-section">
+        <input 
+            type="text" 
+            placeholder="Search users by name, nickname, or email..."
+            [(ngModel)]="searchQuery"
+            class="search-bar"
+        />
+    </div>
+
+    <!-- USERS LIST -->
+    <div class="dashboard-section">
+        <h2>Users Management</h2>
+
+        <div class="users-list">
+
+            @if ((users | filterUsers: searchQuery) != null) {
+
+                <div class="table-header">
+                    <div class="col-avatar">Avatar</div>
+                    <div class="col-name">Name</div>
+                    <div class="col-nickname">Nickname</div>
+                    <div class="col-email">Email</div>
+                    <div class="col-actions">Actions</div>
+                </div>
+
+                @for (user of (users | filterUsers: searchQuery); track user.id) {
+
+                    <div class="user-row">
+                        <div class="col-avatar">
+                            <img [src]="user.profilePicture" [alt]="user.name" class="user-avatar" />
+                        </div>
+
+                        <div class="col-name">
+                            {{ user.name }} {{ user.surename }}
+                        </div>
+
+                        <div class="col-nickname">
+                            @{{ user.nickname }}
+                        </div>
+
+                        <div class="col-email">
+                            {{ user.email }}
+                        </div>
+
+                        <div class="col-actions">
+                            <button 
+                                class="btn btn-suspend"
+                                (click)="suspendUser(user.id)"
+                            >
+                                🚫 Suspend
+                            </button>
+
+                            <button 
+                                class="btn btn-delete"
+                                (click)="deleteUser(user.id)"
+                            >
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+
+                }
+
+            } @else {
+
+                <div class="empty-state">
+                    <div class="empty-icon">👥</div>
+                    <h3>No users found</h3>
+                    <p>Try adjusting your search criteria</p>
+                </div>
+
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<app-footer></app-footer>

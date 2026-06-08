@@ -1,61 +1,159 @@
-<div class="profile-container">
+<!-- NAVBAR ROUTER HERE -->
+    <app-navBar></app-navBar>
 
-    <!-- HEADER / USER INFO -->
-    <div class="profile-header">
-        <div class="avatar">
-            {{ user.name?.charAt(0) || "U" }}
+
+<div class="profile-page">
+
+    <!-- HERO / PROFILE HEADER -->
+    <div class="profile-hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="profile-header">
+
+            <div class="avatar-section">
+
+                <div class="avatar">
+                    {{ user.name?.charAt(0) || "U" }}
+                </div>
+
+                <div class="online-indicator"></div>
+
+            </div>
+
+            <div class="user-info">
+
+                <div class="name-row">
+                    <h1>{{ user.name || "User Name" }}</h1>
+
+                    <span class="role-badge">
+                        {{ user.role }}
+                    </span>
+                </div>
+
+                <p class="nickname">
+                    @{{ user.nickname || "nickname" }}
+                </p>
+
+                <p class="bio">
+                    {{ user.bio || "No bio added yet." }}
+                </p>
+
+                <p class="email">
+                    {{ user.email || "email@example.com" }}
+                </p>
+
+            </div>
+
         </div>
 
-        <div class="user-info">
-            <h2>{{ user.name || "User Name" }}</h2>
-            <p class="nickname">@{{ user.nickname || "nickname" }}</p>
-            <p class="email">{{ user.email || "email@example.com" }}</p>
-        </div>
     </div>
 
 
-    <!-- COMPLETION / PROGRESS -->
-    <div class="progress-section">
-        <div class="progress-header">
-            <h3>Voting Progress</h3>
-            <span>{{ user.completion || 0 }}%</span>
+    <!-- STATS -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <h2>{{ votes.length }}</h2>
+            <p>Total Votes</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>{{ completion }}%</h2>
+            <p>Completion</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>12</h2>
+            <p>Categories</p>
+        </div>
+
+    </div>
+
+
+    <!-- PROGRESS -->
+    <div class="section-card">
+
+        <div class="section-header">
+            <h2>Voting Progress</h2>
+            <span>{{ completion }}%</span>
         </div>
 
         <div class="progress-bar">
-            <div class="progress-fill" [style.width.%]="user.completion || 0">
-            </div>
+            <div
+                class="progress-fill"
+                [style.width.%]="completion"
+            ></div>
         </div>
 
-        <p class="progress-text">
-            Complete all categories to reach 100%
+        <p class="section-subtitle">
+            Complete all categories to unlock your final ballot.
         </p>
+
     </div>
 
 
-    <!-- BALLOT / USER VOTES -->
-    <div class="ballot-section">
-        <h3>Your Votes</h3>
+    <!-- USER VOTES -->
+    <div class="section-card">
 
-        <div class="ballot-grid">
+        <div class="section-header">
+            <h2>Your Votes</h2>
+        </div>
 
-            <!-- Example card -->
-            <div class="ballot-card" >
-                @for (vote of user.votes; track $index) {
+        @if (votes.length > 0) {
 
-                
-                    <div class="category">
-                        {{ vote || "Category" }}
+            <div class="votes-grid">
+
+                @for (vote of votes; track $index) {
+
+                    <div 
+                        class="vote-card-thumbnail"
+                        (click)="goToGamePage(vote.game)"
+                    >
+                        <div class="game-thumbnail">
+                            <img 
+                                [src]="vote.game.coverImage" 
+                                [alt]="vote.game.title"
+                                class="cover-image"
+                            />
+                            <div class="overlay">
+                                <h3 class="game-title">{{ vote.game.title }}</h3>
+                            </div>
+                        </div>
+                        <div class="category-label">
+                            {{ vote.category }}
+                        </div>
                     </div>
 
                 }
+
             </div>
 
-            <!-- Empty state -->
-            <div class="empty" *ngIf="!votes || votes.length === 0">
-                You haven't voted yet.
+        } @else {
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🗳️
+                </div>
+
+                <h3>No votes yet</h3>
+
+                <p>
+                    Start voting to build your ballot.
+                </p>
+
+                <button class="vote-button">
+                    Start Voting
+                </button>
+
             </div>
 
-        </div>
+        }
+
     </div>
 
 </div>
+
+<!-- FOOTER ROUTER HERE -->
+<app-footer></app-footer>

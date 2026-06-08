@@ -13,6 +13,16 @@
         <p>Explore, vote and share your opinion about the best games.</p>
     </section>
 
+    <!-- SEARCH BAR -->
+    <section class="search-section">
+        <input 
+            type="text" 
+            placeholder="Search games by title..."
+            [(ngModel)]="searchQuery"
+            class="search-bar"
+        />
+    </section>
+
     <!-- GAME LIST -->
     <section class="game-list">
 
@@ -20,42 +30,19 @@
 
         <div class="games-grid">
 
-            <!-- CARD -->
-            <div class="game-card">
-                <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000017486/ce2588bffd4be4a6f375a6e2954dc7de7b8ee45281d8f6fcf79d7f391221f793" alt="game" />
-                <h3>Game Title</h3>
+            <!-- CARD - Loop through games -->
+            @for (game of ((games | filterGames: searchQuery)); track game.id) {
+                <div class="game-card" (click)="goToGamePage(game)" style="cursor: pointer;">
+                    <img [src]="game.coverImage" [alt]="game.title" />
+                    <h3>{{ game.title }}</h3>
 
-                <div class="card-rating">
-                    ★★★★☆
+                    <div class="card-rating">
+                        @for (star of stars; track star) {
+                            <span [class.filled]="star <= game.rating">★</span>
+                        }
+                    </div>
                 </div>
-            </div>
-
-            <div class="game-card">
-                <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000017486/ce2588bffd4be4a6f375a6e2954dc7de7b8ee45281d8f6fcf79d7f391221f793" alt="game" />
-                <h3>Game Title</h3>
-
-                <div class="card-rating">
-                    ★★★☆☆
-                </div>
-            </div>
-
-            <div class="game-card">
-                <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000017486/ce2588bffd4be4a6f375a6e2954dc7de7b8ee45281d8f6fcf79d7f391221f793" alt="game" />
-                <h3>Game Title</h3>
-
-                <div class="card-rating">
-                    ★★★★★
-                </div>
-            </div>
-
-            <div class="game-card">
-                <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000017486/ce2588bffd4be4a6f375a6e2954dc7de7b8ee45281d8f6fcf79d7f391221f793" alt="game" />
-                <h3>Game Title</h3>
-
-                <div class="card-rating">
-                    ★★★★☆
-                </div>
-            </div>
+            }
 
         </div>
 

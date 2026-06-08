@@ -67,6 +67,56 @@
     }
 }
 
+/* SEARCH */
+
+/* SEARCH BAR */
+.search-section {
+    padding: 2rem;
+    text-align: center;
+}
+
+.search-bar {
+    width: 100%;
+    max-width: 500px;
+    padding: 0.75rem 1.2rem;
+    font-size: 1rem;
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 8px;
+    color: #e2e8f0;
+    transition: all 0.3s ease;
+
+    &::placeholder {
+        color: #94a3b8;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        background: #0f172a;
+    }
+
+    &:hover {
+        border-color: #475569;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .search-bar {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+}
+
+
+
+
 /* GAME LIST */
 .game-list {
     padding: 2rem;

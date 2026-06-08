@@ -1,23 +1,55 @@
 <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-left">
-            <h2 class="logo">GameHub</h2>
+            <a routerLink="/" class="logo-link">
+                <h2 class="logo">GameHub</h2>
+            </a>
         </div>
 
         <div class="nav-center">
             <a routerLink="/add-game-form">Add Game Form</a>
-            <a routerLink="/login">Login</a>
-            <a routerLink="/register">Register</a>
-            <a routerLink="/game-page">Game Details</a>
+            @if(!(isLogged$ | async)) { 
+                <a routerLink="/login">Login</a>
+                <a routerLink="/register">Register</a>
+            }
+            <a routerLink="/contact-us">Contact Us</a>
+            <!-- <a routerLink="/game-page">Game Details</a> -->
             <a routerLink="/user-profile">User Profile</a>
-            @if(get_is_admin()) {
-                <a routerLink="/users-info">Users info</a>
+            <a routerLink="/about">About</a>
+            @if(isAdmin$ | async) {
+                <a routerLink="/admin-dashboard">Admin Dashboard</a>
             }
         </div>
 
         <div class="nav-right">
-            <img class="user-icon" src="/icons/user2.png" alt="My Icon">
+            <div class="user-menu-container">
+                @if (isLogged$ | async) {
+                    <img 
+                    class="user-icon" 
+                    src="/icons/user2.png" 
+                    alt="My Icon"
+                    (click)="toggleUserMenu()"
+                >
+                
+                }
+                
+                @if(showUserMenu) {
+                    <div class="user-dropdown-menu">
+                        <a routerLink="/user-profile" (click)="toggleUserMenu()">
+                            📋 Edit Profile
+                        </a>
+                        <a routerLink="/my-games" (click)="toggleUserMenu()">
+                            🎮 My Games
+                        </a>
+                        <button (click)="logout()" class="logout-btn">
+                            🚪 Logout
+                        </button>
+                    </div>
+                }
+            </div>
 
-            <button routerLink="/login" class="login-btn">Login</button>
+            @if(!(isLogged$ | async)) {
+                <button routerLink="/login" class="login-btn">Login</button>
+            }
         </div>
     </nav>

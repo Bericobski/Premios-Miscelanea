@@ -13,8 +13,7 @@ export class User {
     password: string;
     profilePicture: string;
     bio: string;
-    completion: number = 0; // Percentage of voting completion
-    votes : string[] = []; // Categories the user has voted for
+    
     role: UserRole = UserRole.USER;
 
     constructor(
@@ -26,8 +25,7 @@ export class User {
         password: string,
         profilePicture: string,
         bio: string,
-        completion: number = 0,
-        votes: string[] = [],
+
         userRole: UserRole 
     ) {
         this.id = id;
@@ -38,8 +36,7 @@ export class User {
         this.password = password;
         this.profilePicture = profilePicture;
         this.bio = bio;
-        this.completion = completion;
-        this.votes = votes;
+
         this.role = userRole;
     }
 

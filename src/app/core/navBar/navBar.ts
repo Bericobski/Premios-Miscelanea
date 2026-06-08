@@ -5,6 +5,9 @@ import { MatIconModule } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Auth } from '../../services/auth';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 
@@ -17,16 +20,25 @@ import { CommonModule } from '@angular/common';
 export class NavBar {
 
 
+  isAdmin$: Observable<boolean>;
+  isLogged$: Observable<boolean>;
+  showUserMenu = false;
+
+  constructor(private authService: Auth, private router: Router) {
+    this.isAdmin$ = this.authService.isAdmin$;
+    this.isLogged$ = this.authService.isLogged$;
+  }
+
+  toggleUserMenu() {
+        this.showUserMenu = !this.showUserMenu;
+    }
+
+  logout() {
+      this.authService.logout();
+      this.showUserMenu = false;
+      this.router.navigate(['/login']);
+  }
   
-  is_logged: boolean = false;
-  is_admin: boolean = false;
-
-  constructor(private authService: Auth) {
-  }
-
-  get_is_admin(): boolean {
-    return this.authService.get_is_admin();
-  }
   
   
 
