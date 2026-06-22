@@ -5,24 +5,42 @@ import { GameComment } from '../../classes/gamecomment';
 import { NavBar } from '../../core/navBar/navBar';
 import { GameService } from '../../services/game.service';
 import { Footer } from '../../core/footer/footer';
+import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-game-page',
   standalone: true,
-  imports: [CommonModule, NavBar, Footer],
+  imports: [CommonModule, NavBar, Footer, FormsModule],
   templateUrl: './gamePage.html',
   styleUrls: ['./gamePage.scss']
 })
 export class GamePageComponent {
   @ViewChild('galleryScroll', { static: false }) galleryScroll?: ElementRef<HTMLDivElement>;
 
+  isAdmin$: Observable<boolean>;
+  isLogged$: Observable<boolean>;
+
+  newRating: number;
+
   selectedGalleryIndex = 0;
   currentCoverImage = '';
 
   game: Game;
 
-  constructor(private gameService: GameService) {
+  newComment = {
+    user: '',
+    message: ''
+  };
+
+  constructor(private gameService: GameService, private authService: Auth) {
     const selectedGame = this.gameService.getSelectedGame();
+
+    this.isAdmin$ = this.authService.isAdmin$;
+    this.isLogged$ = this.authService.isLogged$;
+
+    this.newRating = 0;
     if (selectedGame) {
       this.game = selectedGame;
       this.currentCoverImage = selectedGame.coverImage;
@@ -83,5 +101,41 @@ export class GamePageComponent {
 
   vote(category: string) {
     console.log('Voted for:', category);
+  }
+
+
+  addComment(): void {
+
+    
+    if (this.newComment.user.trim() && this.newComment.message.trim()) {
+      const comment = new GameComment(
+        this.game.comments.length + 1,
+        this.newComment.user,
+        this.newComment.message,
+        1,
+        1
+      );
+      
+      this.game.comments.push(comment);
+      
+      // Limpiar el formulario
+      this.newComment = {
+        user: '',
+        message: ''
+      };
+      
+      console.log('Comentario agregado:', comment);
+      // Opcional: llamar a un servicio para guardar en la base de datos
+      // this.gameService.saveComment(this.game.id, comment);
+    }
+  }
+
+
+  updateRating(): void {
+    if (this.newRating >= 1 && this.newRating <= 5) {
+        this.game.rating = this.newRating;
+        this.newRating = 0; // Clear input after submit
+        // Optional: call an API to save the rating
+    }
   }
 }

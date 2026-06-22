@@ -46,6 +46,22 @@
                     <i class="star" [class.filled]="star <= game.rating">★</i>
                 </span>
             </div>
+
+            <div class="rating-form">
+                <h3>Change Rating</h3>
+                <form (ngSubmit)="updateRating()" #ratingForm="ngForm">
+                    <input 
+                        type="number" 
+                        min="1" 
+                        max="5" 
+                        [(ngModel)]="newRating" 
+                        name="newRating"
+                        placeholder="Enter rating (1-5)"
+                        required
+                    />
+                    <button type="submit" [disabled]="!ratingForm.valid">Update Rating</button>
+                </form>
+            </div>
         </div>
 
     </div>
@@ -59,6 +75,38 @@
             {{ cat }}
         </button>
     </div>
+
+    @if((isLogged$ | async)) { 
+                <!-- ADD COMMENT FORM -->
+        <div class="add-comment-section">
+            <h2>Add a Comment</h2>
+            <form (ngSubmit)="addComment()" #commentForm="ngForm">
+                <div class="form-group">
+                    <label for="userName">Your Name</label>
+                    <input 
+                        type="text" 
+                        id="userName"
+                        [(ngModel)]="newComment.user" 
+                        name="userName"
+                        placeholder="Enter your name"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="commentMessage">Comment</label>
+                    <textarea 
+                        id="commentMessage"
+                        [(ngModel)]="newComment.message" 
+                        name="commentMessage"
+                        placeholder="Write your comment..."
+                        rows="4"
+                        required
+                    ></textarea>
+                </div>
+                <button type="submit" [disabled]="!commentForm.valid">Post Comment</button>
+            </form>
+        </div>
+    }
 
     <!-- COMMENTS -->
     <div class="comments">

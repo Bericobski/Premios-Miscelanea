@@ -249,12 +249,112 @@
     background: linear-gradient(135deg, #76b3ff 0%, #c6e2ff 100%);
 }
 
+
+
+
+.add-comment-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+
+    h2 {
+        margin: 0 0 1.5rem 0;
+        font-size: 1.5rem;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-size: 0.95rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        input,
+        textarea {
+            padding: 0.875rem;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            resize: vertical;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            &:focus {
+                outline: none;
+                background: rgba(255, 255, 255, 0.18);
+                border-color: rgba(255, 255, 255, 0.4);
+                box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        textarea {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+    }
+
+    button {
+        padding: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.35);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+
 .comments {
     margin-top: 32px;
     padding: 22px;
     border-radius: 20px;
     background: rgba(10, 18, 32, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.08);
+
+    h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #fff;
+    font-weight: 700;
+    }
 }
 
 .comment {
@@ -275,6 +375,101 @@
     margin: 0;
     color: #dbe6ff;
     line-height: 1.7;
+}
+
+// Rating Form Styling
+.rating-form {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+
+    h3 {
+        margin: 0 0 1rem 0;
+        font-size: 1.1rem;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    form {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-end;
+
+        input {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            &:focus {
+                outline: none;
+                background: rgba(255, 255, 255, 0.25);
+                border-color: rgba(255, 255, 255, 0.5);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+
+            // Number input spinner styling (optional - hide)
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            &[type='number'] {
+                -moz-appearance: textfield;
+            }
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+
+            &:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);
+            }
+
+            &:active:not(:disabled) {
+                transform: translateY(0);
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+    }
+}
+
+// Responsive adjustment
+@media (max-width: 768px) {
+    .rating-form {
+        form {
+            flex-direction: column;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
 }
 
 @media (max-width: 920px) {

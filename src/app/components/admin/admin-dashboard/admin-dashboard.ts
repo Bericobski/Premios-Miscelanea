@@ -35,7 +35,7 @@ export class AdminDashboard {
   }
 
   deleteUser(userId: number) {
-    // To be implemented
+    this.users = this.users.filter(user => user.id !== userId);
     console.log('Delete user:', userId);
   }
 

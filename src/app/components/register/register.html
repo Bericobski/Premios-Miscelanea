@@ -3,29 +3,30 @@
 
         <h2 class="auth-title">Sign Up</h2>
 
-        <form class="auth-form" #registerForm="ngForm" (ngSubmit)="register()">
+        <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="register()">
 
             <div class="form-group">
                 <label>Name</label>
                 <input
                     type="text"
-                    [(ngModel)]="name"
-                    name="name"
+                    formControlName="name"
                     required
                     minlength="3"
-                    #nameInput="ngModel"
                     placeholder="Your name"
                 />
 
-                @if (nameInput.invalid && nameInput.touched) {
+                @if (
+                registerForm.get('name')?.invalid &&
+                registerForm.get('name')?.touched
+                ){
 
                     <div class="error-message">
 
-                        @if (nameInput.errors?.['required']) {
+                        @if (registerForm.get('name')?.errors?.['required']) {
                             <small>Name is required</small>
                         }
 
-                        @if (nameInput.errors?.['minlength']) {
+                        @if (registerForm.get('name')?.errors?.['minlength']) {
                             <small>Name must have at least 3 characters</small>
                         }
 
@@ -37,18 +38,19 @@
                 <label>Surename</label>
                 <input
                     type="text"
-                    [(ngModel)]="surename"
-                    name="surename"
+                    formControlName="surename"
                     required
-                    #surenameInput="ngModel"
                     placeholder="Your surename"
                 />
 
-                @if (surenameInput.invalid && surenameInput.touched) {
+                @if (
+                registerForm.get('surename')?.invalid &&
+                registerForm.get('surename')?.touched
+                ){
 
                     <div class="error-message">
 
-                        @if (surenameInput.errors?.['required']) {
+                        @if (registerForm.get('surename')?.errors?.['required']) {
                             <small>Surename is required</small>
                         }
 
@@ -61,8 +63,7 @@
                 <label>Nickname</label>
                 <input
                     type="text"
-                    [(ngModel)]="nickname"
-                    name="nickname"
+                    formControlName="nickname"
                     required
                     placeholder="bruno123"
                 />
@@ -72,22 +73,22 @@
                 <label>Email</label>
                 <input
                     type="email"
-                    [(ngModel)]="email"
-                    name="email"
+                    formControlName="email"
                     required
                     email
-                    #emailInput="ngModel"
-                    placeholder="example@mail.com"
                 />
-                @if (emailInput.invalid && emailInput.touched) {
+                @if (
+                registerForm.get('email')?.invalid &&
+                registerForm.get('email')?.touched
+                ){
 
                     <div class="error-message">
 
-                        @if (emailInput.errors?.['required']) {
+                        @if (registerForm.get('email')?.errors?.['required']) {
                             <small>Email is required</small>
                         }
 
-                        @if (emailInput.errors?.['email']) {
+                        @if (registerForm.get('email')?.errors?.['email']) {
                             <small>Invalid email format</small>
                         }
 
@@ -99,22 +100,23 @@
                 <label>Password</label>
                 <input
                     type="password"
-                    [(ngModel)]="password"
-                    name="password"
+                    formControlName="password"
                     required
                     minlength="6"
-                    #passwordInput="ngModel"
                     placeholder="********"
                 />
-                @if (passwordInput.invalid && passwordInput.touched) {
+                @if (
+                registerForm.get('password')?.invalid &&
+                registerForm.get('password')?.touched
+                ){
 
                     <div class="error-message">
 
-                        @if (passwordInput.errors?.['required']) {
+                        @if (registerForm.get('password')?.errors?.['required']) {
                             <small>Password is required</small>
                         }
 
-                        @if (passwordInput.errors?.['minlength']) {
+                        @if (registerForm.get('password')?.errors?.['minlength']) {
                             <small>Password must have at least 6 characters</small>
                         }
 
@@ -126,8 +128,7 @@
                 <label>Bio</label>
                 <input
                     type="text"
-                    [(ngModel)]="bio"
-                    name="bio"
+                    formControlName="bio"
                     required
                     placeholder="Tell us about yourself"
                 />
