@@ -1,0 +1,54 @@
+mutation CreateUser($name: String!) @auth(level: USER) {
+  user_insert(data: { uid_expr: "auth.uid", name: $name })
+}
+
+mutation UpdateUser($name: String!) @auth(level: USER) {
+  user_update(key: { uid_expr: "auth.uid" }, data: { name: $name })
+}
+
+mutation DeleteUser @auth(level: USER) {
+  user_delete(key: { uid_expr: "auth.uid" })
+}
+
+query GetCurrentUser @auth(level: USER) {
+  user(key: { uid_expr: "auth.uid" }) {
+    uid
+    name
+  }
+}
+
+query ListUsers @auth(level: PUBLIC, insecureReason: "Public user directory is allowed.") {
+  users {
+    uid
+    name
+  }
+}
+
+mutation CreatePost($text: String!) @auth(level: USER) {
+  post_insert(data: { userUid_expr: "auth.uid", text: $text })
+}
+
+mutation UpdatePost($id: UUID!, $text: String!) @auth(level: USER) {
+  post_update(key: { id: $id }, data: { text: $text })
+}
+
+mutation DeletePost($id: UUID!) @auth(level: USER) {
+  post_delete(key: { id: $id })
+}
+
+query GetPost($id: UUID!) @auth(level: PUBLIC, insecureReason: "Posts are intended to be public.") {
+  post(id: $id) {
+    id
+    text
+    user {
+      name
+    }
+  }
+}
+
+query ListMyPosts @auth(level: USER) {
+  posts(where: { userUid: { eq_expr: "auth.uid" } }) {
+    id
+    text
+  }
+}

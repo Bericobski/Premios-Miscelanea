@@ -1,0 +1,79 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(data) {
+      return isSignedIn() && request.auth.uid == data.userFirebaseUid;
+    }
+
+    // MySQL is still the source of truth for users.role. This collection is a
+    // manually maintained mirror of which Firebase UIDs currently hold the
+    // ADMIN role, kept in sync by hand (Firebase console / an Admin SDK
+    // script) the same way role promotion in MySQL has no in-app UI today.
+    // Never client-writable.
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{uid} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    match /gameComments/{commentId} {
+      allow read: if true;
+
+      allow create: if isSignedIn()
+        && request.resource.data.userFirebaseUid == request.auth.uid
+        && request.resource.data.gameId is int
+        && request.resource.data.userId is int
+        && request.resource.data.userName is string
+        && request.resource.data.commentText is string
+        && request.resource.data.commentText.size() > 0
+        && request.resource.data.commentText.size() <= 2000
+        && request.resource.data.categories is list
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == null
+        && request.resource.data.likesTotal == 0
+        && request.resource.data.likedByUserIds.size() == 0;
+
+      // The comment's creator may edit its text/categories, nothing else.
+      allow update: if isOwner(resource.data)
+        && request.resource.data.gameId == resource.data.gameId
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.userFirebaseUid == resource.data.userFirebaseUid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.likesTotal == resource.data.likesTotal
+        && request.resource.data.likedByUserIds == resource.data.likedByUserIds
+        && request.resource.data.commentText is string
+        && request.resource.data.commentText.size() > 0
+        && request.resource.data.commentText.size() <= 2000
+        && request.resource.data.categories is list
+        && request.resource.data.updatedAt == request.time;
+
+      // Any signed-in user may like/unlike: only likesTotal + likedByUserIds
+      // may change, likesTotal must match the array size, and only the
+      // caller's own uid may be added or removed - one like per user.
+      allow update: if isSignedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likedByUserIds', 'likesTotal'])
+        && request.resource.data.likesTotal == request.resource.data.likedByUserIds.size()
+        && request.resource.data.likedByUserIds.toSet().difference(resource.data.likedByUserIds.toSet()).size() <= 1
+        && resource.data.likedByUserIds.toSet().difference(request.resource.data.likedByUserIds.toSet()).size() <= 1
+        && (
+          request.resource.data.likedByUserIds.toSet().difference(resource.data.likedByUserIds.toSet()).size() == 0
+          || request.resource.data.likedByUserIds.toSet().difference(resource.data.likedByUserIds.toSet()).hasOnly([request.auth.uid])
+        )
+        && (
+          resource.data.likedByUserIds.toSet().difference(request.resource.data.likedByUserIds.toSet()).size() == 0
+          || resource.data.likedByUserIds.toSet().difference(request.resource.data.likedByUserIds.toSet()).hasOnly([request.auth.uid])
+        );
+
+      allow delete: if isOwner(resource.data) || isAdmin();
+    }
+  }
+}

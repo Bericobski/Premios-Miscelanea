@@ -67,41 +67,63 @@
     </div>
 
     <!-- CATEGORY VOTING -->
-    <h2 class = "vote-title">Vote this game</h2>
-    <div class="categories">
-        
-        
-        <button *ngFor="let cat of game.categories" (click)="vote(cat)">
-            {{ cat }}
-        </button>
-    </div>
+    @if (isLogged$ | async) {
+        <h2 class = "vote-title">Vote this game</h2>
+        <div class="categories">
+            <button
+                *ngFor="let cat of categories"
+                (click)="vote(cat)"
+                [class.voted]="hasVotedHere(cat.id)"
+                [disabled]="votingCategoryId() === cat.id"
+            >
+                {{ cat.name }}
+            </button>
+        </div>
 
-    @if((isLogged$ | async)) { 
+        @if (voteMessage()) {
+            <div class="vote-message">
+                {{ voteMessage() }}
+                <button type="button" (click)="voteMessage.set(null)" aria-label="Dismiss">✕</button>
+            </div>
+        }
+        @if (voteError()) {
+            <div class="comment-action-error vote-message">
+                {{ voteError() }}
+                <button type="button" (click)="voteError.set(null)" aria-label="Dismiss">✕</button>
+            </div>
+        }
+    }
+
+    @if((isLogged$ | async)) {
                 <!-- ADD COMMENT FORM -->
         <div class="add-comment-section">
             <h2>Add a Comment</h2>
             <form (ngSubmit)="addComment()" #commentForm="ngForm">
                 <div class="form-group">
-                    <label for="userName">Your Name</label>
-                    <input 
-                        type="text" 
-                        id="userName"
-                        [(ngModel)]="newComment.user" 
-                        name="userName"
-                        placeholder="Enter your name"
-                        required
-                    />
-                </div>
-                <div class="form-group">
                     <label for="commentMessage">Comment</label>
-                    <textarea 
+                    <textarea
                         id="commentMessage"
-                        [(ngModel)]="newComment.message" 
+                        [(ngModel)]="newComment.commentText"
                         name="commentMessage"
                         placeholder="Write your comment..."
                         rows="4"
                         required
                     ></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Categories (optional)</label>
+                    <div class="comment-categories-picker">
+                        @for (cat of categories; track cat.id) {
+                            <label class="category-checkbox">
+                                <input
+                                    type="checkbox"
+                                    [checked]="isNewCommentCategorySelected(cat.id)"
+                                    (change)="toggleCategoryForNewComment(cat.id)"
+                                />
+                                {{ cat.name }}
+                            </label>
+                        }
+                    </div>
                 </div>
                 <button type="submit" [disabled]="!commentForm.valid">Post Comment</button>
             </form>
@@ -112,13 +134,78 @@
     <div class="comments">
         <h2>Comments</h2>
 
-        @for (comment of game.comments; track comment.user) {
-            <div class="comment">
-                <strong>{{ comment.user }}</strong>
-                <p>{{ comment.message }}</p>
+        @if (commentActionError()) {
+            <div class="comment-action-error">
+                {{ commentActionError() }}
+                <button type="button" (click)="commentActionError.set(null)" aria-label="Dismiss">✕</button>
             </div>
-        }   
+        }
 
+        @if (commentsLoading()) {
+            <p class="comments-empty">Loading comments...</p>
+        } @else if (comments().length === 0) {
+            <p class="comments-empty">No comments yet. Be the first to share your thoughts!</p>
+        }
+
+        @for (comment of comments(); track comment.id) {
+            <div class="comment">
+                @if (editingCommentId() === comment.id) {
+                    <div class="edit-comment-form">
+                        <textarea rows="3" [(ngModel)]="editCommentText" name="editCommentText"></textarea>
+                        <div class="comment-categories-picker">
+                            @for (cat of categories; track cat.id) {
+                                <label class="category-checkbox">
+                                    <input
+                                        type="checkbox"
+                                        [checked]="isEditCategorySelected(cat.id)"
+                                        (change)="toggleCategoryForEdit(cat.id)"
+                                    />
+                                    {{ cat.name }}
+                                </label>
+                            }
+                        </div>
+                        <div class="comment-actions">
+                            <button type="button" (click)="saveEditComment(comment)">Save</button>
+                            <button type="button" class="secondary" (click)="cancelEditComment()">Cancel</button>
+                        </div>
+                    </div>
+                } @else {
+                    <div class="comment-header">
+                        <strong>{{ comment.userName }}</strong>
+                        <span class="comment-date">{{ comment.createdAt | date: 'medium' }}</span>
+                    </div>
+
+                    <p>{{ comment.commentText }}</p>
+
+                    @if (comment.categories.length > 0) {
+                        <div class="comment-categories">
+                            @for (cat of comment.categories; track cat.id) {
+                                <span class="category-chip">{{ cat.name }}</span>
+                            }
+                        </div>
+                    }
+
+                    <div class="comment-footer">
+                        <button
+                            type="button"
+                            class="like-button"
+                            [class.liked]="hasLiked(comment)"
+                            [disabled]="!(isLogged$ | async)"
+                            (click)="toggleLike(comment)"
+                        >
+                            ♥ {{ comment.likesTotal }}
+                        </button>
+
+                        @if (canManageComment(comment)) {
+                            <div class="comment-actions">
+                                <button type="button" (click)="startEditComment(comment)">Edit</button>
+                                <button type="button" class="danger" (click)="deleteComment(comment)">Delete</button>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
     </div>
 
 </div>

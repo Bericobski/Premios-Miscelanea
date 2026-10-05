@@ -1,0 +1,34 @@
+mutation CreateSeedData @transaction {
+  user_insertMany(data: [
+    {
+      uid: "user-1",
+      displayName: "Alice Smith"
+    },
+    {
+      uid: "user-2",
+      displayName: "Bob Jones"
+    },
+    {
+      uid: "user-3",
+      displayName: "Charlie Brown"
+    }
+  ])
+  post_insertMany(data: [
+    {
+      userUid: "user-1",
+      text: "Hello world, this is my first post!"
+    },
+    {
+      userUid: "user-1",
+      text: "FDC is pretty powerful for building apps."
+    },
+    {
+      userUid: "user-2",
+      text: "Learning about GraphQL mutations today."
+    },
+    {
+      userUid: "user-3",
+      text: "Does anyone else love server-side data models?"
+    }
+  ])
+}

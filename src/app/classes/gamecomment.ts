@@ -1,15 +1,50 @@
-export class GameComment {
+// Snapshot of an award_categories row, embedded on the comment at creation/edit time.
+export interface CommentCategory {
     id: number;
-    user: string;
-    message: string;
-    gameId: number;
-    categoryId: number;
+    name: string;
+}
 
-    constructor(id: number, user: string, message: string, gameId: number, categoryId: number) {
+// Backed by the "gameComments" Firestore collection (see firestore.rules).
+export class GameComment {
+    id: string;
+    gameId: number;
+    userId: number;
+    userFirebaseUid: string;
+    userName: string;
+    commentText: string;
+    createdAt: Date;
+    updatedAt: Date | null;
+    likesTotal: number;
+    likedByUserIds: string[];
+    categories: CommentCategory[];
+
+    constructor(
+        id: string,
+        gameId: number,
+        userId: number,
+        userFirebaseUid: string,
+        userName: string,
+        commentText: string,
+        createdAt: Date,
+        updatedAt: Date | null,
+        likesTotal: number,
+        likedByUserIds: string[],
+        categories: CommentCategory[]
+    ) {
         this.id = id;
-        this.user = user;
-        this.message = message;
         this.gameId = gameId;
-        this.categoryId = categoryId;
+        this.userId = userId;
+        this.userFirebaseUid = userFirebaseUid;
+        this.userName = userName;
+        this.commentText = commentText;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.likesTotal = likesTotal;
+        this.likedByUserIds = likedByUserIds;
+        this.categories = categories;
+    }
+
+    isLikedBy(uid: string | null): boolean {
+        return !!uid && this.likedByUserIds.includes(uid);
     }
 }

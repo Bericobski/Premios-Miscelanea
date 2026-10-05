@@ -6,10 +6,11 @@ import { User, UserRole } from '../../../classes/user';
 import { CommonModule } from '@angular/common';
 import { FilterUsersPipe } from '../../../pipes/filter-users-pipe';
 import { FormsModule } from '@angular/forms';
+import { VoteResults } from '../vote-results/vote-results';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [RouterOutlet, RouterLink, NavBar, Footer, CommonModule, FilterUsersPipe, FormsModule],
+  imports: [RouterOutlet, RouterLink, NavBar, Footer, CommonModule, FilterUsersPipe, FormsModule, VoteResults],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
 })

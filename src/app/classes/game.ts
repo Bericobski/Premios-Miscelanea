@@ -1,5 +1,3 @@
-import { GameComment } from './gamecomment';
-
 export class Game {
     id: number;
     title: string;
@@ -10,9 +8,9 @@ export class Game {
     coverImage: string;
     gallery: string[];
 
-    // This will become obsolete when we implement dynamic categories and comments, but for now it's a simple array of strings and GameComment objects
+    // This will become obsolete when we implement dynamic categories, but for now it's a simple array of strings
     categories: string[];
-    comments: GameComment[];
+    year: number;
 
     constructor(
         id: number,
@@ -24,7 +22,7 @@ export class Game {
         coverImage: string,
         gallery: string[],
         categories: string[],
-        comments: GameComment[]
+        year: number = 0
     ) {
         this.id = id;
         this.title = title;
@@ -35,6 +33,6 @@ export class Game {
         this.coverImage = coverImage;
         this.gallery = gallery;
         this.categories = categories;
-        this.comments = comments;
+        this.year = year;
     }
 }

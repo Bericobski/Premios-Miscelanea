@@ -1,0 +1,76 @@
+<div class="dashboard-section vote-results">
+    <h2>Vote Results</h2>
+
+    <!-- CATEGORY SELECTOR -->
+    <div class="category-buttons">
+        <button
+            type="button"
+            class="btn btn-category"
+            [class.active]="selectedCategoryId() === null"
+            (click)="selectCategory(null)"
+        >
+            All
+        </button>
+        @for (category of categories(); track category.id) {
+            <button
+                type="button"
+                class="btn btn-category"
+                [class.active]="selectedCategoryId() === category.id"
+                (click)="selectCategory(category.id)"
+            >
+                {{ category.name }}
+            </button>
+        }
+    </div>
+
+    @if (error()) {
+        <div class="results-error">{{ error() }}</div>
+    }
+
+    <!-- CHART: top games of the selected category -->
+    <div class="results-card chart-card" [hidden]="stats().length === 0">
+        <h3>Top {{ chartRows().length }} · {{ selectedCategoryName() }}</h3>
+        <div class="chart-wrapper">
+            <canvas #chartCanvas></canvas>
+        </div>
+    </div>
+
+    <!-- TABLE: every game with at least one vote -->
+    <div class="results-card">
+        <div class="table-toolbar">
+            <h3>{{ selectedCategoryName() }}</h3>
+            <button type="button" class="btn btn-sort" (click)="toggleSort()" [disabled]="stats().length < 2">
+                {{ sortDesc() ? 'Most voted first ↓' : 'Least voted first ↑' }}
+            </button>
+        </div>
+
+        @if (loading()) {
+            <p class="results-empty">Loading vote results...</p>
+        } @else if (stats().length === 0 && !error()) {
+            <div class="empty-state">
+                <div class="empty-icon">🗳️</div>
+                <h3>No votes yet in this category</h3>
+            </div>
+        } @else if (stats().length > 0) {
+            <div class="table-header">
+                <div>#</div>
+                <div>Cover</div>
+                <div>Game</div>
+                <div class="col-votes">Votes</div>
+            </div>
+
+            @for (row of tableRows(); track row.gameId; let i = $index) {
+                <div class="result-row">
+                    <div class="col-rank">{{ sortDesc() ? i + 1 : tableRows().length - i }}</div>
+                    <div>
+                        @if (row.coverImage) {
+                            <img [src]="row.coverImage" [alt]="row.title" class="game-cover" />
+                        }
+                    </div>
+                    <div class="col-title">{{ row.title }}</div>
+                    <div class="col-votes">{{ row.votes }}</div>
+                </div>
+            }
+        }
+    </div>
+</div>

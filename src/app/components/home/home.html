@@ -46,6 +46,12 @@
 
         </div>
 
+        @if (hasMoreGames) {
+            <div class="load-more-container">
+                <button type="button" class="load-more-button" (click)="loadMoreGames()">Load more games</button>
+            </div>
+        }
+
     </section>
 
     
