@@ -2,19 +2,41 @@
     <div class="auth-card">
         <h2 class="auth-title">Login</h2>
 
-        <div class="auth-form">
+        <form class="auth-form" [formGroup]="form" (ngSubmit)="onEmailLogin()">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email" />
+                @if (form.controls.email.touched && form.controls.email.invalid) {
+                    <div class="error-message"><small>Enter a valid email address.</small></div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+                @if (form.controls.password.touched && form.controls.password.invalid) {
+                    <div class="error-message"><small>Password is required.</small></div>
+                }
+            </div>
+
+            <button type="submit" class="auth-button" [disabled]="submitting">
+                {{ submitting ? 'Logging in...' : 'Log in' }}
+            </button>
+
+            <p class="auth-divider">or</p>
+
             <button type="button" class="auth-button google-button" (click)="onGoogleLogin()">
                 Continue with Google
             </button>
 
             @if(error) {
-                <p class="error-message">{{ error }}</p>
+                <div class="error-message"><small>{{ error }}</small></div>
             }
 
             <p class="auth-switch">
                 Don't have an account?
                 <a routerLink="/register">Sign up</a>
             </p>
-        </div>
+        </form>
     </div>
 </div>

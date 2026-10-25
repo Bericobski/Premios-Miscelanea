@@ -13,6 +13,42 @@
         <p>Explore, vote and share your opinion about the best games.</p>
     </section>
 
+    <!-- ADVENTURE SECTION: its own list, the search bar below does not filter it -->
+    @if (adventureGames().length > 0) {
+        <section class="game-list">
+
+            <h2>Adventure</h2>
+
+            <div class="games-grid">
+                @for (game of adventureGames(); track game.id) {
+                    <div class="game-card" appHighlight (click)="goToGamePage(game)" style="cursor: pointer;">
+                        <img [src]="game.coverImage" [alt]="game.title" />
+                        <h3>{{ game.title }}</h3>
+                    </div>
+                }
+            </div>
+
+        </section>
+    }
+
+    <!-- INDIE SECTION: its own list, the search bar below does not filter it -->
+    @if (indieGames().length > 0) {
+        <section class="game-list">
+
+            <h2>Indie</h2>
+
+            <div class="games-grid">
+                @for (game of indieGames(); track game.id) {
+                    <div class="game-card" appHighlight (click)="goToGamePage(game)" style="cursor: pointer;">
+                        <img [src]="game.coverImage" [alt]="game.title" />
+                        <h3>{{ game.title }}</h3>
+                    </div>
+                }
+            </div>
+
+        </section>
+    }
+
     <!-- SEARCH BAR -->
     <section class="search-section">
         <input 
@@ -31,22 +67,22 @@
         <div class="games-grid">
 
             <!-- CARD - Loop through games -->
-            @for (game of ((games | filterGames: searchQuery)); track game.id) {
-                <div class="game-card" (click)="goToGamePage(game)" style="cursor: pointer;">
+            @for (game of (games() | filterGames: searchQuery); track game.id) {
+                <div class="game-card" appHighlight (click)="goToGamePage(game)" style="cursor: pointer;">
                     <img [src]="game.coverImage" [alt]="game.title" />
                     <h3>{{ game.title }}</h3>
-
-                    <div class="card-rating">
+                    
+                    <!-- <div class="card-rating">
                         @for (star of stars; track star) {
                             <span [class.filled]="star <= game.rating">★</span>
                         }
-                    </div>
+                    </div> -->
                 </div>
             }
 
         </div>
 
-        @if (hasMoreGames) {
+        @if (hasMoreGames()) {
             <div class="load-more-container">
                 <button type="button" class="load-more-button" (click)="loadMoreGames()">Load more games</button>
             </div>

@@ -1,6 +1,13 @@
 <div class="dashboard-section vote-results">
     <h2>Vote Results</h2>
 
+    <!-- Download xlsx file button -->
+
+    <button type="button" class="btn btn-download" (click)="downloadXlsx()" [disabled]="loading() || stats().length === 0">
+        <span class="material-icons">download</span>
+        Download XLSX
+    </button>
+
     <!-- CATEGORY SELECTOR -->
     <div class="category-buttons">
         <button

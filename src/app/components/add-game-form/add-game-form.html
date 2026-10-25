@@ -1,54 +1,117 @@
+<app-navBar></app-navBar>
 
-<div class="form-container">
-    <h1>Add a Game</h1>
+<div class="add-game-page">
 
-    <form class="game-form">
+    <!-- HEADER -->
+    <div class="page-header">
+        <h1>Add a Game</h1>
+        <p>Add a new game to the Premios Miscelánea catalog</p>
+    </div>
 
-        <div class="form-group">
-            <label for="name">Game Name</label>
-            <input id="name" type="text" placeholder="Enter game name" />
-        </div>
+    <div class="form-card">
+        <form class="game-form" [formGroup]="form" (ngSubmit)="onSubmit()">
 
-        <div class="form-group">
-            <label for="category">Award Category</label>
-            <select id="category">
-                <option value="">Select category</option>
-                <option>Best Gameplay</option>
-                <option>Best Story</option>
-                <option>Most Addictive</option>
-                <option>Hidden Gem</option>
-            </select>
-        </div>
+            <!-- LEFT: game data -->
+            <div class="form-fields">
+                <div class="form-group full">
+                    <label for="title">Title *</label>
+                    <input id="title" type="text" formControlName="title" placeholder="e.g. The Legend of Zelda" />
+                    @if (hasError('title', 'required')) {
+                        <small class="field-error">Title is required.</small>
+                    }
+                    @if (hasError('title', 'maxlength')) {
+                        <small class="field-error">At most 200 characters.</small>
+                    }
+                </div>
 
-        <div class="form-group">
-            <label for="genre">Genre</label>
-            <select id="genre">
-                <option value="">Select genre</option>
-                <option>Action</option>
-                <option>RPG</option>
-                <option>Strategy</option>
-                <option>Indie</option>
-            </select>
-        </div>
+                <div class="form-group">
+                    <label for="studio">Studio</label>
+                    <input id="studio" type="text" formControlName="studio" placeholder="e.g. Nintendo" />
+                    @if (hasError('studio', 'maxlength')) {
+                        <small class="field-error">At most 150 characters.</small>
+                    }
+                </div>
 
-        <div class="form-group">
-            <label for="studio">Studio</label>
-            <input id="studio" type="text" placeholder="Game studio" />
-        </div>
+                <div class="form-group">
+                    <label for="genre">Genre *</label>
+                    <select id="genre" formControlName="genre">
+                        <option value="" disabled>Select a genre</option>
+                        @for (genre of genres(); track genre) {
+                            <option [value]="genre">{{ genre }}</option>
+                        }
+                    </select>
+                    @if (hasError('genre', 'required')) {
+                        <small class="field-error">Pick a genre.</small>
+                    }
+                </div>
 
-        <div class="form-group">
-            <label for="year">Release Year</label>
-            <input id="year" type="number" placeholder="2024" />
-        </div>
+                <div class="form-group">
+                    <label for="year">Release year *</label>
+                    <input id="year" type="number" formControlName="year" min="1950" [max]="maxYear" />
+                    @if (hasError('year', 'required') || hasError('year', 'min') || hasError('year', 'max')) {
+                        <small class="field-error">Between 1950 and {{ maxYear }}.</small>
+                    }
+                </div>
 
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea id="description" rows="5" placeholder="Write a short description..."></textarea>
-        </div>
+                <div class="form-group">
+                    <label for="rating">Rating (1–5) *</label>
+                    <input id="rating" type="number" formControlName="rating" min="1" max="5" step="0.1" />
+                    @if (hasError('rating', 'required') || hasError('rating', 'min') || hasError('rating', 'max')) {
+                        <small class="field-error">Between 1 and 5.</small>
+                    }
+                </div>
 
-        <button type="submit" class="submit-btn">
-            Submit Game
-        </button>
+                <div class="form-group full">
+                    <label for="coverImage">Cover image URL</label>
+                    <input id="coverImage" type="url" formControlName="coverImage" placeholder="https://..." />
+                    @if (hasError('coverImage', 'pattern')) {
+                        <small class="field-error">Must start with http:// or https://</small>
+                    }
+                </div>
 
-    </form>
+                <div class="form-group full">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="5" formControlName="description" placeholder="Write a short description..."></textarea>
+                    <small class="field-hint">{{ form.controls.description.value.length }} / 2000</small>
+                    @if (hasError('description', 'maxlength')) {
+                        <small class="field-error">At most 2000 characters.</small>
+                    }
+                </div>
+            </div>
+
+            <!-- RIGHT: live cover preview -->
+            <div class="cover-preview">
+                <span class="preview-label">Cover preview</span>
+                <div class="preview-frame">
+                    @if (coverPreview(); as cover) {
+                        <img [src]="cover" alt="Cover preview" (error)="coverLoaded.set(false)" />
+                    } @else {
+                        <div class="preview-placeholder">
+                            <span class="material-icons">image</span>
+                            <span>Paste a cover URL to preview it</span>
+                        </div>
+                    }
+                </div>
+                <h3 class="preview-title">{{ form.controls.title.value || 'Game title' }}</h3>
+            </div>
+
+            <!-- FEEDBACK + SUBMIT -->
+            <div class="form-footer">
+                @if (error()) {
+                    <p class="banner banner-error">{{ error() }}</p>
+                }
+                @if (success()) {
+                    <p class="banner banner-success">{{ success() }}</p>
+                }
+
+                <button type="submit" class="submit-btn" [disabled]="saving()">
+                    <span class="material-icons">add_circle</span>
+                    {{ saving() ? 'Adding game...' : 'Add Game' }}
+                </button>
+            </div>
+
+        </form>
+    </div>
 </div>
+
+<app-footer></app-footer>

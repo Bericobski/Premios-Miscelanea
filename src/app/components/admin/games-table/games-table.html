@@ -1,0 +1,77 @@
+<div class="dashboard-section">
+    <h2>Games Catalog</h2>
+
+    <input
+        type="text"
+        placeholder="Search games by title..."
+        [(ngModel)]="searchQuery"
+        class="search-bar"
+    />
+
+    <!-- The pipe runs once here; the result feeds both the counter and the table. -->
+    @let filteredGames = games() | filterGames: searchQuery;
+
+    @if (loading()) {
+        <p class="table-status">Loading games...</p>
+    } @else if (error()) {
+        <p class="table-status table-error">{{ error() }}</p>
+    } @else {
+        <p class="table-status">Showing {{ filteredGames?.length ?? 0 }} of {{ games().length }} games</p>
+
+        @if (message()) {
+            <p class="table-feedback table-success">{{ message() }}</p>
+        }
+        @if (actionError()) {
+            <p class="table-feedback table-error">{{ actionError() }}</p>
+        }
+
+        <div class="games-table">
+            <div class="games-row table-header">
+                <div>ID</div>
+                <div>Title</div>
+                <div>Studio</div>
+                <div>Year</div>
+                <div class="col-actions">Actions</div>
+            </div>
+
+            @if (filteredGames?.length) {
+                <!-- Only the visible rows (+ a small buffer) exist in the page at any time. -->
+                <cdk-virtual-scroll-viewport [itemSize]="rowHeight" class="viewport">
+                    <div
+                        *cdkVirtualFor="let game of filteredGames; trackBy: trackById"
+                        class="games-row"
+                    >
+                        <div class="col-id">{{ game.id }}</div>
+                        <div class="col-title">
+                            <button
+                                type="button"
+                                class="title-link"
+                                (click)="openGamePage(game)"
+                                [class.opening]="openingId() === game.id"
+                                [title]="'Open ' + game.title"
+                            >
+                                {{ game.title }}
+                            </button>
+                        </div>
+                        <div class="col-studio">{{ game.studio }}</div>
+                        <div class="col-year">{{ game.year || '—' }}</div>
+                        <div class="col-actions">
+                            <button
+                                type="button"
+                                class="btn-delete"
+                                (click)="deleteGame(game)"
+                                [disabled]="deletingId() === game.id"
+                                [title]="'Delete ' + game.title"
+                            >
+                                <span class="material-icons">delete</span>
+                                {{ deletingId() === game.id ? 'Deleting...' : 'Delete' }}
+                            </button>
+                        </div>
+                    </div>
+                </cdk-virtual-scroll-viewport>
+            } @else {
+                <p class="table-empty">No games match "{{ searchQuery }}"</p>
+            }
+        </div>
+    }
+</div>

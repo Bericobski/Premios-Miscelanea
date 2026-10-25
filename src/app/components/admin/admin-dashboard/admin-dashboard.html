@@ -9,14 +9,40 @@
         <p>Manage users and platform content</p>
     </div>
 
-    <!-- SEARCH BAR -->
+    <!-- SEARCH -->
     <div class="dashboard-section">
-        <input 
-            type="text" 
-            placeholder="Search users by name, nickname, or email..."
-            [(ngModel)]="searchQuery"
-            class="search-bar"
-        />
+        <form class="search-form" (ngSubmit)="search()">
+            <input
+                type="text"
+                name="searchQuery"
+                placeholder="Search users by nickname..."
+                [(ngModel)]="searchQuery"
+                class="search-bar"
+            />
+
+            <div class="search-controls">
+                <label class="role-checkbox">
+                    <input type="checkbox" name="roleAdmin" [(ngModel)]="roles[UserRole.ADMIN]" />
+                    Admin
+                </label>
+                <label class="role-checkbox">
+                    <input type="checkbox" name="roleUser" [(ngModel)]="roles[UserRole.USER]" />
+                    User
+                </label>
+
+                <button type="submit" class="btn btn-search" [disabled]="!canSearch()">
+                    {{ loading() ? 'Searching...' : '🔍 Search' }}
+                </button>
+            </div>
+        </form>
+        <p class="search-hint">Type at least {{ minSearchLength }} characters of the nickname. Leave both roles unchecked to search all.</p>
+
+        @if (error()) {
+            <p class="dashboard-error">{{ error() }}</p>
+        }
+        @if (message()) {
+            <p class="dashboard-message">{{ message() }}</p>
+        }
     </div>
 
     <!-- USERS LIST -->
@@ -25,7 +51,7 @@
 
         <div class="users-list">
 
-            @if ((users | filterUsers: searchQuery) != null) {
+            @if (users().length > 0) {
 
                 <div class="table-header">
                     <div class="col-avatar">Avatar</div>
@@ -35,11 +61,11 @@
                     <div class="col-actions">Actions</div>
                 </div>
 
-                @for (user of (users | filterUsers: searchQuery); track user.id) {
+                @for (user of users(); track user.id) {
 
                     <div class="user-row">
                         <div class="col-avatar">
-                            <img [src]="user.profilePicture" [alt]="user.name" class="user-avatar" />
+                            <img [src]="user.profilePicture || '/icons/user.svg'" [alt]="user.name" class="user-avatar" />
                         </div>
 
                         <div class="col-name">
@@ -48,6 +74,7 @@
 
                         <div class="col-nickname">
                             @{{ user.nickname }}
+                            <span class="role-badge" [class.role-admin]="user.role === UserRole.ADMIN">{{ user.role }}</span>
                         </div>
 
                         <div class="col-email">
@@ -55,16 +82,16 @@
                         </div>
 
                         <div class="col-actions">
-                            <button 
+                            <button
                                 class="btn btn-suspend"
                                 (click)="suspendUser(user.id)"
                             >
                                 🚫 Suspend
                             </button>
 
-                            <button 
+                            <button
                                 class="btn btn-delete"
-                                (click)="deleteUser(user.id)"
+                                (click)="deleteUser(user)"
                             >
                                 🗑️ Delete
                             </button>
@@ -77,8 +104,13 @@
 
                 <div class="empty-state">
                     <div class="empty-icon">👥</div>
-                    <h3>No users found</h3>
-                    <p>Try adjusting your search criteria</p>
+                    @if (searched()) {
+                        <h3>No users found</h3>
+                        <p>Try another nickname or role filter</p>
+                    } @else {
+                        <h3>Search users by nickname</h3>
+                        <p>Results will appear here</p>
+                    }
                 </div>
 
             }
@@ -86,6 +118,15 @@
         </div>
 
     </div>
+
+    <!-- GAMES CATALOG: code and data only load when this block scrolls into view -->
+    @defer (on viewport) {
+        <app-games-table></app-games-table>
+    } @placeholder {
+        <div class="dashboard-section defer-placeholder">Games catalog loads when you scroll here...</div>
+    } @loading (minimum 300ms) {
+        <div class="dashboard-section defer-placeholder">Loading games catalog...</div>
+    }
 
     <!-- VOTE RESULTS -->
     <app-vote-results></app-vote-results>

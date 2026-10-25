@@ -15,6 +15,7 @@ import { Category } from '../../../classes/category';
 import { Auth } from '../../../services/auth';
 import { AwardCategoryService } from '../../../services/award-category.service';
 import { GameVoteStat, VoteService } from '../../../services/vote.service';
+import * as XLSX from 'xlsx';
 
 Chart.register(...registerables);
 
@@ -120,6 +121,24 @@ export class VoteResults implements AfterViewInit, OnDestroy {
 
   toggleSort(): void {
     this.sortDesc.update((desc) => !desc);
+  }
+
+  downloadXlsx(): void {
+    const categoryId = this.selectedCategoryId();
+    const categoryName = this.selectedCategoryName();
+    this.voteService.getVoteStats(categoryId).then((stats) => {
+      const rows = stats.map((stat) => ({
+        'Game ID': stat.gameId,
+        Title: stat.title,
+        'Cover Image': stat.coverImage ?? '',
+        Votes: stat.votes,
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(rows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Vote Results');
+      const filename = `vote_results_${categoryName.replace(/\s+/g, '_').toLowerCase()}.xlsx`;
+      XLSX.writeFile(workbook, filename);
+    });
   }
 
   selectedCategoryName(): string {

@@ -1,0 +1,218 @@
+/* Matches the look of admin-dashboard.scss (component styles are scoped, so they are repeated here). */
+
+.dashboard-section {
+    max-width: 1200px;
+    margin: 3rem auto 2rem;
+    padding: 0 2rem;
+    color: white;
+}
+
+.dashboard-section h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+}
+
+.search-bar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-bar::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+.search-bar:focus {
+    outline: none;
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(92,107,192,0.5);
+    box-shadow: 0 0 20px rgba(92,107,192,0.2);
+}
+
+.table-status {
+    margin: 0.8rem 0;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.9rem;
+}
+
+.table-error {
+    color: #ef5350;
+}
+
+.games-table {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* Every row has a fixed height equal to GamesTable.rowHeight (44px) — virtual scroll depends on it. */
+.games-row {
+    display: grid;
+    grid-template-columns: 80px 2fr 1.5fr 80px 120px;
+    gap: 1rem;
+    align-items: center;
+    height: 44px;
+    box-sizing: border-box;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.9rem;
+
+    > div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.games-row:not(.table-header):hover {
+    background: rgba(92,107,192,0.1);
+}
+
+.table-header {
+    background: rgba(63,81,181,0.15);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-weight: bold;
+    color: #9fa8da;
+}
+
+.viewport {
+    height: 500px;
+}
+
+.col-id,
+.col-year {
+    color: #9fa8da;
+}
+
+.col-title {
+    font-weight: 600;
+}
+
+/* Title opens the game page: looks like text, behaves like a link */
+.title-link {
+    max-width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+        color: #9fa8da;
+        text-decoration: underline;
+        outline: none;
+    }
+
+    &.opening {
+        color: #9fa8da;
+        opacity: 0.6;
+        cursor: wait;
+    }
+}
+
+.col-studio {
+    color: #b0b0b0;
+}
+
+/* DELETE: same tinted red as the users table's delete button. Fits inside the fixed 44px row. */
+.col-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    height: 30px;
+    padding: 0 0.7rem;
+    border-radius: 8px;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    background: rgba(244, 67, 54, 0.15);
+    color: #ef5350;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    .material-icons {
+        font-size: 1rem;
+    }
+}
+
+.btn-delete:hover:not(:disabled) {
+    background: rgba(244, 67, 54, 0.35);
+    border-color: rgba(244, 67, 54, 0.6);
+    box-shadow: 0 0 12px rgba(244, 67, 54, 0.2);
+}
+
+.btn-delete:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.table-feedback {
+    margin: 0 0 0.8rem;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.table-success {
+    background: rgba(76, 175, 80, 0.12);
+    border: 1px solid rgba(76, 175, 80, 0.35);
+    color: #81c784;
+}
+
+.table-feedback.table-error {
+    background: rgba(255, 90, 90, 0.12);
+    border: 1px solid rgba(255, 90, 90, 0.35);
+    color: #ffb3b3;
+}
+
+.table-empty {
+    padding: 2rem;
+    text-align: center;
+    color: #9e9e9e;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .dashboard-section {
+        padding: 0 1rem;
+    }
+
+    .games-row {
+        grid-template-columns: 50px 1fr 60px 44px;
+        padding: 0 1rem;
+    }
+
+    .col-studio,
+    .table-header > div:nth-child(3) {
+        display: none;
+    }
+
+    /* Icon-only delete button on phones */
+    .btn-delete {
+        padding: 0 0.4rem;
+        font-size: 0;
+
+        .material-icons {
+            font-size: 1.1rem;
+        }
+    }
+}

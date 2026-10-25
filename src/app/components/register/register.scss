@@ -1,5 +1,7 @@
 .auth-container {
-    height: 100vh;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -107,4 +109,11 @@
         color: red;
         font-size: 0.8rem;
     }
+}
+
+.auth-divider {
+    margin: 0;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #888;
 }

@@ -7,7 +7,6 @@
         </div>
 
         <div class="nav-center">
-            <a routerLink="/add-game-form">Add Game Form</a>
             @if(!(isLogged$ | async)) { 
                 <a routerLink="/login">Login</a>
                 <a routerLink="/register">Register</a>
@@ -18,6 +17,7 @@
             <a routerLink="/about">About</a>
             @if(isAdmin$ | async) {
                 <a routerLink="/admin-dashboard">Admin Dashboard</a>
+                <a routerLink="/add-game-form">Add Game</a>
             }
         </div>
 

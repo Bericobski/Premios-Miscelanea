@@ -74,6 +74,81 @@
     box-shadow: 0 0 20px rgba(92,107,192,0.2);
 }
 
+/* SEARCH FORM */
+.search-form {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.role-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #c5cae9;
+    cursor: pointer;
+}
+
+.btn-search {
+    background: rgba(92,107,192,0.35);
+    color: white;
+    border: 1px solid rgba(92,107,192,0.6);
+    padding: 1rem 1.5rem;
+}
+
+.btn-search:hover:not(:disabled) {
+    background: rgba(92,107,192,0.55);
+}
+
+.btn-search:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.search-hint {
+    margin: 0.6rem 0 0;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.85rem;
+}
+
+.dashboard-error {
+    margin: 1rem 0 0;
+    color: #ef5350;
+}
+
+.dashboard-message {
+    margin: 1rem 0 0;
+    color: #81c784;
+}
+
+.role-badge {
+    margin-left: 0.5rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+    color: #c5cae9;
+}
+
+.role-badge.role-admin {
+    background: rgba(255,193,7,0.2);
+    color: #ffd54f;
+}
+
+/* DEFERRED GAMES TABLE PLACEHOLDER */
+.defer-placeholder {
+    min-height: 120px;
+    color: rgba(255,255,255,0.45);
+}
+
 /* USERS LIST */
 .users-list {
     background: rgba(255,255,255,0.04);
@@ -283,5 +358,14 @@
 
     .dashboard-section {
         padding: 0 1rem;
+    }
+
+    .search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-controls {
+        justify-content: space-between;
     }
 }
