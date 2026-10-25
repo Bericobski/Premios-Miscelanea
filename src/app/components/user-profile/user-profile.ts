@@ -13,9 +13,6 @@ import { Auth } from '../../services/auth';
 import { AwardCategoryService } from '../../services/award-category.service';
 import { VotedGame, VoteService } from '../../services/vote.service';
 
-const PICTURE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-const MAX_PICTURE_BYTES = 2 * 1024 * 1024;
-
 @Component({
   selector: 'app-user-profile',
   imports: [NavBar, Footer, RouterLink, FormsModule],
@@ -41,10 +38,12 @@ export class UserProfile {
   readonly editing = signal<boolean>(false);
   readonly saving = signal<boolean>(false);
   readonly editError = signal<string | null>(null);
-  readonly uploadingPicture = signal<boolean>(false);
+  readonly editingPicture = signal<boolean>(false);
+  readonly savingPicture = signal<boolean>(false);
   readonly pictureError = signal<string | null>(null);
+  pictureUrl = '';
 
-    editForm: ProfileChanges = { name: '', surename: '', nickname: '', email: '', bio: '' };
+  editForm: ProfileChanges = { name: '', surename: '', nickname: '', email: '', bio: '' };
 
   constructor(
     private router: Router,
@@ -114,34 +113,32 @@ export class UserProfile {
     }
   }
 
-  async onPictureSelected(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    input.value = ''; // lets the same file be picked again after an error
-    if (!file) return;
-
+  startPictureEdit(): void {
+    this.pictureUrl = this.profile()?.profilePicture ?? '';
     this.pictureError.set(null);
-    if (!PICTURE_TYPES.includes(file.type)) {
-      this.pictureError.set('Choose a JPG, PNG, WEBP or GIF image.');
-      return;
-    }
-    if (file.size > MAX_PICTURE_BYTES) {
-      this.pictureError.set('The picture must be at most 2 MB.');
-      return;
-    }
+    this.editingPicture.set(true);
+  }
 
-    this.uploadingPicture.set(true);
+  cancelPictureEdit(): void {
+    this.editingPicture.set(false);
+    this.pictureError.set(null);
+  }
+
+  async savePicture(): Promise<void> {
+    this.pictureError.set(null);
+    this.savingPicture.set(true);
     try {
-      await this.authService.uploadProfilePicture(file);
+      await this.authService.setProfilePicture(this.pictureUrl.trim());
+      this.editingPicture.set(false);
     } catch (error) {
-      console.error('Failed to upload profile picture', error);
+      console.error('Failed to update profile picture', error);
       this.pictureError.set(
         error instanceof HttpErrorResponse && error.error?.error
           ? error.error.error
-          : 'Something went wrong uploading your picture. Please try again.'
+          : 'Something went wrong saving your picture. Please try again.'
       );
     } finally {
-      this.uploadingPicture.set(false);
+      this.savingPicture.set(false);
     }
   }
 

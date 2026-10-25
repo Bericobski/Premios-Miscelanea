@@ -35,16 +35,27 @@
                 <div class="online-indicator"></div>
 
                 @if (isPasswordUser()) {
-                    <label class="picture-button" [class.disabled]="uploadingPicture()">
-                        {{ uploadingPicture() ? 'Uploading...' : '📷 Change photo' }}
-                        <input
-                            type="file"
-                            accept="image/jpeg,image/png,image/webp,image/gif"
-                            hidden
-                            [disabled]="uploadingPicture()"
-                            (change)="onPictureSelected($event)"
-                        />
-                    </label>
+                    @if (editingPicture()) {
+                        <form class="picture-form" (ngSubmit)="savePicture()">
+                            <input
+                                type="url"
+                                name="pictureUrl"
+                                placeholder="https://... image link"
+                                [(ngModel)]="pictureUrl"
+                                [disabled]="savingPicture()"
+                            />
+                            <div class="picture-actions">
+                                <button type="submit" class="picture-button" [disabled]="savingPicture()">
+                                    {{ savingPicture() ? 'Saving...' : 'Save' }}
+                                </button>
+                                <button type="button" class="picture-button" [disabled]="savingPicture()" (click)="cancelPictureEdit()">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    } @else {
+                        <button type="button" class="picture-button" (click)="startPictureEdit()">📷 Change photo</button>
+                    }
                 }
 
                 @if (pictureError()) {

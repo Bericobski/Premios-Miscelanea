@@ -402,7 +402,7 @@ a.vote-button {
     }
 }
 
-/* PROFILE PICTURE UPLOAD */
+/* PROFILE PICTURE (link to an online image) */
 .picture-button {
     display: block;
     margin-top: 0.8rem;
@@ -421,9 +421,34 @@ a.vote-button {
         background: rgba(92, 107, 192, 0.4);
     }
 
-    &.disabled {
+    &:disabled {
         opacity: 0.6;
         cursor: wait;
+    }
+}
+
+.picture-form {
+    margin-top: 0.8rem;
+    max-width: 200px;
+
+    input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.4rem 0.6rem;
+        border-radius: 8px;
+        border: 1px solid rgba(159, 168, 218, 0.4);
+        background: rgba(0, 0, 0, 0.3);
+        color: #e8eaf6;
+        font-size: 0.85rem;
+    }
+
+    .picture-actions {
+        display: flex;
+        gap: 0.4rem;
+
+        .picture-button {
+            flex: 1;
+        }
     }
 }
 
