@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3001/api',
+  apiUrl: 'https://premios-miscelanea-api.vercel.app/api',
   firebaseConfig: {
     apiKey: "AIzaSyCfNnRqYGCikickx-VPyWdg5tkZBbR0vxM",
     authDomain: "premios-miscelanea.firebaseapp.com",
