@@ -13,6 +13,9 @@ import { Auth } from '../../services/auth';
 import { AwardCategoryService } from '../../services/award-category.service';
 import { VotedGame, VoteService } from '../../services/vote.service';
 
+const PICTURE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_PICTURE_BYTES = 2 * 1024 * 1024;
+
 @Component({
   selector: 'app-user-profile',
   imports: [NavBar, Footer, RouterLink, FormsModule],
@@ -23,6 +26,7 @@ export class UserProfile {
   // The signed-in user's MySQL profile (null while loading or when signed out).
   readonly profile;
   readonly isLogged;
+  readonly isPasswordUser;
 
   readonly votes = signal<VotedGame[]>([]);
   readonly votesLoading = signal<boolean>(true);
@@ -37,7 +41,10 @@ export class UserProfile {
   readonly editing = signal<boolean>(false);
   readonly saving = signal<boolean>(false);
   readonly editError = signal<string | null>(null);
-  editForm: ProfileChanges = { name: '', surename: '', nickname: '', email: '', bio: '' };
+  readonly uploadingPicture = signal<boolean>(false);
+  readonly pictureError = signal<string | null>(null);
+
+    editForm: ProfileChanges = { name: '', surename: '', nickname: '', email: '', bio: '' };
 
   constructor(
     private router: Router,
@@ -48,6 +55,7 @@ export class UserProfile {
   ) {
     this.profile = toSignal(this.authService.profile$, { initialValue: null });
     this.isLogged = toSignal(this.authService.isLogged$, { initialValue: false });
+    this.isPasswordUser = toSignal(this.authService.isPasswordUser$, { initialValue: false });
 
     awardCategoryService.getActiveCategories().subscribe((categories) => this.categories.set(categories));
 
@@ -103,6 +111,37 @@ export class UserProfile {
       );
     } finally {
       this.saving.set(false);
+    }
+  }
+
+  async onPictureSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = ''; // lets the same file be picked again after an error
+    if (!file) return;
+
+    this.pictureError.set(null);
+    if (!PICTURE_TYPES.includes(file.type)) {
+      this.pictureError.set('Choose a JPG, PNG, WEBP or GIF image.');
+      return;
+    }
+    if (file.size > MAX_PICTURE_BYTES) {
+      this.pictureError.set('The picture must be at most 2 MB.');
+      return;
+    }
+
+    this.uploadingPicture.set(true);
+    try {
+      await this.authService.uploadProfilePicture(file);
+    } catch (error) {
+      console.error('Failed to upload profile picture', error);
+      this.pictureError.set(
+        error instanceof HttpErrorResponse && error.error?.error
+          ? error.error.error
+          : 'Something went wrong uploading your picture. Please try again.'
+      );
+    } finally {
+      this.uploadingPicture.set(false);
     }
   }
 

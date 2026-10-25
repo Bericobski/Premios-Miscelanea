@@ -10,6 +10,7 @@ import { GameService } from '../../services/game.service';
 import { AwardCategoryService } from '../../services/award-category.service';
 import { GameCommentService } from '../../services/game-comment.service';
 import { VoteService } from '../../services/vote.service';
+import { GameApiService } from '../../services/game-api.service';
 import { Footer } from '../../core/footer/footer';
 import { FormsModule } from '@angular/forms';
 import { Observable, map } from 'rxjs';
@@ -69,7 +70,8 @@ export class GamePageComponent {
     private authService: Auth,
     private awardCategoryService: AwardCategoryService,
     private gameCommentService: GameCommentService,
-    private voteService: VoteService
+    private voteService: VoteService,
+    private gameApiService: GameApiService
   ) {
     const selectedGame = this.gameService.getSelectedGame();
 
@@ -193,15 +195,27 @@ export class GamePageComponent {
     const previousGameId = this.myVotes().get(category.id);
     this.votingCategoryId.set(category.id);
 
+    // Look up the previously voted game's title alongside the vote (null if it can't be loaded).
+    const previousTitle =
+      previousGameId !== undefined
+        ? this.gameApiService.getGame(previousGameId).then((game) => game.title, () => null)
+        : Promise.resolve(null);
+
     try {
       const saved = await this.voteService.castVote(this.game.id, category.id);
 
       this.myVotes.update((votes) => new Map(votes).set(saved.categoryId, saved.gameId));
-      this.voteMessage.set(
-        previousGameId !== undefined
-          ? `Your vote for ${category.name} was moved to this game.`
-          : `Vote saved for ${category.name}!`
-      );
+
+      const previousGameTitle = await previousTitle;
+      if (previousGameTitle) {
+        this.voteMessage.set(
+          `Your vote for ${category.name} was moved from ${previousGameTitle} to ${this.game.title}.`
+        );
+      } else if (previousGameId !== undefined) {
+        this.voteMessage.set(`Your vote for ${category.name} was moved to ${this.game.title}.`);
+      } else {
+        this.voteMessage.set(`Vote saved for ${category.name}!`);
+      }
     } catch (error) {
       console.error('Failed to save vote', error);
       this.voteError.set('Something went wrong saving your vote. Please try again.');

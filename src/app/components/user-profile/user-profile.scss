@@ -402,6 +402,37 @@ a.vote-button {
     }
 }
 
+/* PROFILE PICTURE UPLOAD */
+.picture-button {
+    display: block;
+    margin-top: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(159, 168, 218, 0.4);
+    background: rgba(92, 107, 192, 0.2);
+    color: #e8eaf6;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.25s ease;
+
+    &:hover {
+        background: rgba(92, 107, 192, 0.4);
+    }
+
+    &.disabled {
+        opacity: 0.6;
+        cursor: wait;
+    }
+}
+
+.picture-error {
+    margin-top: 0.6rem;
+    max-width: 200px;
+    font-size: 0.85rem;
+}
+
 /* EDIT PROFILE */
 .edit-button {
     margin-left: auto;

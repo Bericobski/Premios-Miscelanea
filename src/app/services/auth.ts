@@ -47,6 +47,10 @@ export class Auth {
   profile$ = this.profileSubject.asObservable();
   isLogged$ = this.currentUser$.pipe(map((user) => !!user));
   isAdmin$ = this.profile$.pipe(map((profile) => profile?.role === UserRole.ADMIN));
+  // True for accounts that sign in with email/password (only these can upload a profile picture).
+  isPasswordUser$ = this.currentUser$.pipe(
+    map((user) => !!user?.providerData.some((provider) => provider.providerId === 'password'))
+  );
 
   // Settles once the current user's profile sync has finished (null when signed out).
   private profileReady: Promise<UserProfile | null> = Promise.resolve(null);
@@ -137,6 +141,24 @@ export class Auth {
     }
     const profile = await firstValueFrom(
       this.http.put<UserProfile>(`${environment.apiUrl}/users/me`, changes, {
+        headers: { Authorization: `Bearer ${idToken}` },
+      })
+    );
+    this.profileSubject.next(profile);
+    this.profileReady = Promise.resolve(profile);
+    return profile;
+  }
+
+  // Uploads a new profile picture (email/password accounts only) and publishes the updated profile to profile$.
+  async uploadProfilePicture(file: File): Promise<UserProfile> {
+    const idToken = await this.getIdToken();
+    if (!idToken) {
+      throw new Error('Not signed in');
+    }
+    const body = new FormData();
+    body.append('picture', file);
+    const profile = await firstValueFrom(
+      this.http.post<UserProfile>(`${environment.apiUrl}/users/me/profile-picture`, body, {
         headers: { Authorization: `Bearer ${idToken}` },
       })
     );
